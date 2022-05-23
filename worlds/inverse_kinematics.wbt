@@ -1,0 +1,242 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  fieldOfView 0.85
+  orientation 0.248682506347356 -0.09839837437965253 -0.9635739571803708 4.140592017733435
+  position -0.8475224642729261 -6.121565922375154 4.92427630911308
+  follow "robot:IRB 4600/40:solid:solid:solid:solid:solid:solid:pen"
+  followType "Pan and Tilt Shot"
+}
+TexturedBackground {
+  texture "empty_office"
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location -5 4 6
+  castShadows TRUE
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location -5 -5 6
+}
+Floor {
+  translation -4.3 0 0
+  name "floor(1)"
+  size 16.4 20
+  tileSize 1 1
+  appearance ThreadMetalPlate {
+  }
+}
+Irb4600-40 {
+  translation -4.84 0 0.74
+  rotation 0 0 1 -1.5708
+  controller "my_controller"
+  supervisor TRUE
+  handSlot [
+    Pen {
+      translation 0 0 0.02
+      rotation 0 1 0 3.14159
+      children [
+        Transform {
+          translation 0 0 0.05
+          children [
+            Shape {
+              appearance BrushedAluminium {
+                colorOverride 0 0.4131074998092622 0.9919279774166476
+              }
+              geometry Cylinder {
+                height 0.05
+                radius 0.04
+                subdivision 24
+              }
+            }
+          ]
+        }
+        Transform {
+          translation 0 0 0.04
+          children [
+            Shape {
+              appearance BrushedAluminium {
+                colorOverride 0 0 0
+              }
+              geometry Cylinder {
+                height 0.07
+                radius 0.01
+                subdivision 12
+              }
+            }
+          ]
+        }
+      ]
+      leadSize 0.01
+      maxDistance 0.05
+    }
+  ]
+  staticBase TRUE
+}
+Table {
+  translation -4.84 1 0
+  size 3 3 0.74
+  feetPadding 0.05
+  frameThickness 0.1
+  trayAppearance OldSteel {
+    textureTransform TextureTransform {
+      scale 2 2
+    }
+  }
+  legAppearance GalvanizedMetal {
+  }
+}
+DEF TABLE_WITH_PAPER_SHEET Transform {
+  translation -5.8 -1.1 0
+  children [
+    DEF PAPER Transform {
+      translation 0 0 0.741
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+            }
+            texture ImageTexture {
+              url [
+                "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/default/worlds/textures/plastic.jpg"
+              ]
+            }
+          }
+          geometry Plane {
+            size 0.8 0.8
+          }
+        }
+      ]
+    }
+    Table {
+      name "table with paper"
+      size 1 1 0.74
+      feetPadding 0.05
+      frameThickness 0.1
+    }
+  ]
+}
+DEF TARGET Solid {
+  translation -5.87 -1.14 1.64
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColorMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
+          ]
+        }
+        roughnessMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
+          ]
+        }
+        metalnessMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
+          ]
+        }
+        emissiveColorMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
+          ]
+        }
+        textureTransform TextureTransform {
+          scale 2 1
+        }
+      }
+      geometry Sphere {
+        radius 0.1
+        subdivision 2
+      }
+    }
+  ]
+}
+Floor {
+  translation -4.22 0 7
+  rotation 1 0 0 3.1415926
+  size 16.4 20
+  tileSize 1 1
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/default/worlds/textures/asphalt.jpg"
+      ]
+    }
+    roughness 1
+    metalness 0
+  }
+}
+Wall {
+  translation 3.82 0 0
+  name "wall(1)"
+  size 0.2 20 7
+  appearance Roughcast {
+    textureTransform TextureTransform {
+      scale 5 1.725
+    }
+  }
+}
+Wall {
+  translation -12.5 0 0
+  name "wall(2)"
+  size 0.2 20 7
+  appearance Roughcast {
+    textureTransform TextureTransform {
+      scale 5 1.725
+    }
+  }
+}
+Wall {
+  translation -4.3 10 0
+  rotation 0 0 1 1.5708
+  name "wall(3)"
+  size 0.2 16.5 7
+  appearance Roughcast {
+    textureTransform TextureTransform {
+      scale 4.125 1.725
+    }
+  }
+}
+Wall {
+  translation -4.3 -10 0
+  rotation 0 0 1 -1.5707953071795862
+  size 0.2 16.5 7
+  appearance Roughcast {
+    textureTransform TextureTransform {
+      scale 4.125 1.725
+    }
+  }
+}
+Solid {
+  translation -6.36 9.87 4.1301
+  rotation 0.5773509358554485 -0.5773509358554485 0.5773489358556708 2.0944
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        baseColorMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/default/worlds/textures/ladybug.png"
+          ]
+          filtering 5
+        }
+        transparency 0.6
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          rotation 1.5708
+        }
+      }
+      geometry Plane {
+        size 5 5
+      }
+    }
+  ]
+  name "ladybug"
+}
