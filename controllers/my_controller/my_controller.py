@@ -13,9 +13,9 @@
 # limitations under the License.
 
 """Demonstration of inverse kinematics using the "ikpy" Python module."""
+#############################################
 
 #Libraries
-
 import sys
 import tempfile
 import pandas as pd
@@ -32,12 +32,20 @@ from controller import Supervisor
 if ikpy.__version__[0] < '3':
     sys.exit('The "ikpy" Python module version is too old. '
              'Please upgrade "ikpy" Python module to version "3.0" or newer with this command: "pip install --upgrade ikpy"')
+#############################################
+
 
 # Constants
-
 IKPY_MAX_ITERATIONS = 4
 
 NO_DIGITS = 10 # number of digits
+
+data_dir = '..\\..\\data\\path t numbers\\'
+data_fname = 'patht_Num_'
+
+DRAWING_TIME = 2 * math.pi + 1.5
+DIGIT = 2
+#############################################
 
 # Initialize the Webots Supervisor.
 supervisor = Supervisor()
@@ -53,14 +61,10 @@ for i in [0, 6]:
     armChain.active_links_mask[i] = False
 
 # Load xt and yt data.
-data_dir = '..\\..\\data\\'
-data_fname = 'patht_Num_'
 df = []
 for i in range(NO_DIGITS):
     df.append(pd.read_csv(data_dir+
         data_fname+str(i)+'.csv'))
-
-print(df)
 
 # Initialize the arm motors and encoders.
 motors = []
@@ -79,17 +83,19 @@ arm = supervisor.getSelf()
 # Loop 1: Draw the digit on the paper sheet.
 print('Draw the digit on the paper sheet...')
 ctr = 0
+clock_period = DRAWING_TIME/len(df[DIGIT])
+clk_start = supervisor.getTime()
+
 while supervisor.step(timeStep) != -1:
-    t = supervisor.getTime()
+    # t = supervisor.getTime()
 
     # Use the circle equation relatively to the arm base as an input of the IK algorithm.
     # x = 0.25 * math.cos(t) + 1.1# + 0.02*t
     # y = 0.25 * math.sin(t) - 0.95# + 0.02*t
-    number = 0
-    x = df[number]['x'].tolist()[ctr]
-    y = df[number]['y'].tolist()[ctr]
+
+    x = df[DIGIT]['x'].tolist()[ctr]
+    y = df[DIGIT]['y'].tolist()[ctr]
     # print('x:', x, 'y:', y)
-    ctr +=1
         
     z = 0.05
 
@@ -106,11 +112,15 @@ while supervisor.step(timeStep) != -1:
     motors[5].setPosition(ikResults[1])
 
     # Conditions to start/stop drawing and leave this loop.
-    if supervisor.getTime() > 2 * math.pi + 1.5:
-        print('ctr: ', ctr)
-        break
-    elif supervisor.getTime() > 1.5:
+    
+    if supervisor.getTime() > 1.5:
         # Note: start to draw at 1.5 second to be sure the arm is well located.
+        if(supervisor.getTime() - clk_start > clock_period):
+            ctr +=1
+            clk_start = supervisor.getTime()
+
+        if ctr > len(df[DIGIT])-1:
+            break
         supervisor.getDevice('pen').write(True)
 
 # Loop 2: Move the arm hand to the target.

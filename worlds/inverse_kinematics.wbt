@@ -122,7 +122,7 @@ DEF TABLE_WITH_PAPER_SHEET Transform {
   ]
 }
 DEF TARGET Solid {
-  translation -5.87 -1.14 1.64
+  translation -4.22 -1.14 1.64
   children [
     Shape {
       appearance PBRAppearance {
