@@ -44,7 +44,7 @@ data_dir = '..\\..\\data\\path t numbers\\'
 data_fname = 'patht_Num_'
 
 DRAWING_TIME = 2 * math.pi + 1.5
-DIGIT = 2
+DIGIT = 3
 #############################################
 
 # Initialize the Webots Supervisor.
