@@ -61,6 +61,7 @@ def plot_digits(digit_img):
 
 
 IMAGE_PATH = '..\\data\\generated image numbers\\number'
+print('initialized data stored in the following directory:')
 get_ipython().system('pwd')
 
 
