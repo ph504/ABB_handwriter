@@ -180,7 +180,7 @@ def scramble_mutation(child):
     else:
         print('mutation didn\'t occur')
 
-def inversion_mutation(child):
+def inverse_mutation(child):
     if(random.random() < P_MUTATION):
         left = random.randint(0,len(child)-1)
         right = random.randint(0,len(child)-1)
@@ -337,12 +337,15 @@ def order1_crossover(parents_pairs):
                     
             children.append(child1)
             children.append(child2)
-            print('===========')
-            print('parent1=', parent1)
-            print('parent2=', parent2)
-            print('-----')
-            print('child1=', child1)
-            print('child2=', child2)
+            if(DEBUGMODE):
+                print('===========')
+                print('right=',right)
+                print('left=',left)
+                print('parent1=', parent1)
+                print('parent2=', parent2)
+                print('-----')
+                print('child1=', child1)
+                print('child2=', child2)
     return children
 
 def partially_mapped_crossover(parents_pairs):
@@ -381,12 +384,15 @@ def partially_mapped_crossover(parents_pairs):
 
             children.append(child1)
             children.append(child2)
-            print('===========')
-            print('parent1=', parent1)
-            print('parent2=', parent2)
-            print('-----')
-            print('child1=', child1)
-            print('child2=', child2)
+            if(DEBUGMODE):
+                print('===========')
+                print('right=',right)
+                print('left=',left)
+                print('parent1=', parent1)
+                print('parent2=', parent2)
+                print('-----')
+                print('child1=', child1)
+                print('child2=', child2)
     return children
 
 def cycle_crossover(parents_pairs):
@@ -405,10 +411,10 @@ def cycle_crossover(parents_pairs):
                     cycle.append(i)
                     visited.append(i)
                     j = np.where(parent1==parent2[i])
-                    while(j!=i):
-                        cycle.append(j)
-                        visited.append(j)
-                        j = np.where(parent1==parent2[j])
+                    while(j[0][0]!=i):
+                        cycle.append(j[0][0])
+                        visited.append(j[0][0])
+                        j = np.where(parent1==parent2[j[0][0]])
                     cycles.append(cycle)
 
             turn = 1
@@ -423,44 +429,67 @@ def cycle_crossover(parents_pairs):
 
             children.append(child1)
             children.append(child2)
-            print('===========')
-            print('parent1=', parent1)
-            print('parent2=', parent2)
-            print('-----')
-            print('child1=', child1)
-            print('child2=', child2)
+            if(DEBUGMODE):
+                print('===========')
+                print('parent1=', parent1)
+                print('parent2=', parent2)
+                print('-----')
+                print('child1=', child1)
+                print('child2=', child2)
     return children
 
 # -------------------------- edge recombination
-def build_common_edge_table(p1, p2):
+def build_common_edge_table(p1, p2, chrom_size):
     table = [[] for i in range(chrom_size)]
     for i in range(chrom_size):
 
         p2i = p2.index(p1[i])
-        n1 = [p1[i-1], p1[i+1]]
-        n2 = [p2[p2i-1], p2[p2i+1]]
-        for n in n2:
-            if(n in n1):
+        n1p1_index = (i-1)%chrom_size
+        n2p1_index = (i+1)%chrom_size
+        np1 = [p1[n1p1_index], p1[n2p1_index]]
+        n1p2_index = (p2i-1)%chrom_size
+        n2p2_index = (p2i+1)%chrom_size
+        np2 = [p2[n1p2_index], p2[n2p2_index]]
+        for n in np2:
+            if(n in np1):
                 table[p1[i]].append((n, True))
             else:
                 table[p1[i]].append((n, False))
-        for n in n1:
-            if(n not in n2):
+        for n in np1:
+            if(n not in np2):
                 table[p1[i]].append((n, False))
     return table
-def build_child_edge_recom(parent, child, input_table):
-    table = input_table.copy()
+def build_child_edge_recom(parent, child, input_table, chrom_size):
+    table = [[] for i in range(chrom_size)]
+    for i in range(chrom_size):
+        table[i] = input_table[i].copy()
+    if(DEBUGMODE):
+        for i in range(chrom_size):
+            print(i,':',table[i])
+    # table = input_table.copy() won't work.
+    # because the internal lists of input_table will be copied by reference
     current_index = random.randint(0,chrom_size-1)
+    if(DEBUGMODE):
+        print('random')
     candidate_n = parent[current_index]
     choices = [x for x in range(chrom_size)]
     # build this procedure for every allel.
     for i in range(chrom_size):
+        if(DEBUGMODE):
+            print('child=',child)
+            print('current index in child:', current_index)
+            print('candidate=', candidate_n)
+            print('choices=', choices)
         choices.remove(candidate_n)
         child[current_index] = candidate_n
         candidate_list_length = len(table[candidate_n])
         if(candidate_list_length==0 and len(choices)>0):
+            # next candidate random
+            if(DEBUGMODE):
+                print('random')
             candidate_n = random.choice(choices)
-        else:
+        elif(candidate_list_length>0):
+            # next candidate common edge or shortest neighbour list.
             # random initialization of candidate_n 
             # e.g. the first element in the table list for current element.
             candidate_n = table[child[current_index]][0][0]
@@ -468,21 +497,36 @@ def build_child_edge_recom(parent, child, input_table):
             shortest_list_len = len(table[candidate_n])
             # common edge has a higher priority of being the next candidate.
             found_common_edge = False
+            if(DEBUGMODE):
+                print('current list:', end=' ')
+                print(table[child[current_index]])
             for n in table[child[current_index]]:
-                if((n, True) in table[child[current_index]]):
-                    table[child[current_index]].remove((n,True))
-                    candidate_n = n
+                if(DEBUGMODE):
+                    print('neighb=',n)
+                if(n[1]):
+#                     table[child[current_index]].remove(n)
+                    table[n[0]].remove((child[current_index],True))
+                    candidate_n = n[0]
                     found_common_edge = True
                 else:
-                    table[child[current_index]].remove((n,False))
+#                     table[child[current_index]].remove(n)
+                    table[n[0]].remove((child[current_index],False))
 
                 # we still have to remove current element from all the neighbours' lists.
-                # hence we can't break.
+                # hence we can't break if there is a common edge.
                 if(not found_common_edge):
-                    newn_list_len = len(table[n])
+                    if(DEBUGMODE):
+                        print('by shortest length')
+                    newn_list_len = len(table[n[0]])
                     if(shortest_list_len > newn_list_len):
-                        candidate_n = n
+                        candidate_n = n[0]
                         shortest_list_len = newn_list_len
+                else:
+                    if(DEBUGMODE):
+                        print('by common edge')
+                if(DEBUGMODE):
+                    for i in range(len(table)):
+                        print(i, ':',table[i])
 
         current_index += 1
         current_index %= chrom_size
@@ -501,20 +545,30 @@ def edge_recombination(parents_pairs):
             chrom_size = len(parent1)
             child1 = [-1]*chrom_size
             child2 = [-1]*chrom_size
+            if(DEBUGMODE):
+                print('parents:')
+                print(parent1)
+                print(parent2)
+            table = build_common_edge_table(parent1, parent2, chrom_size)
+            if(DEBUGMODE):
+                print('the table:')
+                for x in table:
+                    print(x)
 
-            table = build_common_edge_table(parent1, parent2)
-
-            child1 = build_child_edge_recom(parent1, child1, table)
-            child2 = build_child_edge_recom(parent2, child2, table)
+            child1 = build_child_edge_recom(parent1, child1, table, chrom_size)
+            if(DEBUGMODE):
+                print('----------------------- new child ------------------------')
+            child2 = build_child_edge_recom(parent2, child2, table, chrom_size)
 
             children.append(child1)
             children.append(child2)
-            print('===========')
-            print('parent1=', parent1)
-            print('parent2=', parent2)
-            print('-----')
-            print('child1=', child1)
-            print('child2=', child2)
+            if(DEBUGMODE):
+                print('===========')
+                print('parent1=', parent1)
+                print('parent2=', parent2)
+                print('-----')
+                print('child1=', child1)
+                print('child2=', child2)
     return children
 # crossovers ----------------------------------
 
