@@ -40,7 +40,7 @@ IKPY_MAX_ITERATIONS = 4
 
 NO_DIGITS = 10 # number of digits
 
-data_dir = '..\\..\\data\\path t numbers\\'
+data_dir = '..\\..\\data\\path(t) numbers\\'
 data_fname = 'patht_Num_'
 
 DRAWING_TIME = 2 * math.pi + 1.5
@@ -100,10 +100,12 @@ while supervisor.step(timeStep) != -1:
     z = 0.05
 
     # Call "ikpy" to compute the inverse kinematics of the arm.
+
     initial_position = [0] + [m.getPositionSensor().getValue() for m in motors] + [0]
     ikResults = armChain.inverse_kinematics([x, y, z], max_iter=IKPY_MAX_ITERATIONS, initial_position=initial_position)
 
     # Actuate the 3 first arm motors with the IK results.
+
     for i in range(3):
         motors[i].setPosition(ikResults[i + 1])
     # Keep the hand orientation down.

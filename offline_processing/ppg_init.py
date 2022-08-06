@@ -7,6 +7,7 @@
 
 
 import cv2 as cv
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -61,8 +62,8 @@ def plot_digits(digit_img):
 
 
 IMAGE_PATH = '..\\data\\generated image numbers\\number'
-print('initialized data stored in the following directory:')
-get_ipython().system('pwd')
+print('initialized data is stored in the following directory:')
+print('..\\data\\generated image numbers')
 
 
 number_gray = np.zeros((NO_DIGITS, IMG_WIDTH ,IMG_HEIGHT))

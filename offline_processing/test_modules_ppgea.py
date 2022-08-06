@@ -4,7 +4,7 @@
 # # Testing ppgGA
 # testing the path pattern generator using genetics algorithm with genetics algorithm aproach
 
-# In[1]:
+
 
 
 import ppg_ea
@@ -32,13 +32,13 @@ import random
 #         1. `exponential_ranked_based_select`
 # 4. [Population control functions](#MISC-and-population-related)
 
-# In[2]:
+
 
 
 TEST_NUM = 4
 
 
-# In[3]:
+
 
 
 def test_insert_mutation():
@@ -54,7 +54,7 @@ def test_insert_mutation():
         print(test_child)
 
 
-# In[4]:
+
 
 
 def test_scramble_mutation():
@@ -70,7 +70,7 @@ def test_scramble_mutation():
         print(test_child)
 
 
-# In[5]:
+
 
 
 def test_inverse_mutation():
@@ -86,7 +86,7 @@ def test_inverse_mutation():
         print(test_child)
 
 
-# In[6]:
+
 
 
 def test_swap_mutation():
@@ -102,7 +102,7 @@ def test_swap_mutation():
         print(test_child)
 
 
-# In[7]:
+
 
 
 # generating fake parents 
@@ -122,7 +122,7 @@ def test_generate_parents(test_parents_num=79, out_option=False):
     return test_parents
 
 
-# In[8]:
+
 
 
 def test_duplocal_parentspair(test_parents, out_option=False):
@@ -133,7 +133,7 @@ def test_duplocal_parentspair(test_parents, out_option=False):
     return test_result_duplocal
 
 
-# In[9]:
+
 
 
 def test_dupglobal_parentspair(test_parents, out_option=False):
@@ -144,7 +144,7 @@ def test_dupglobal_parentspair(test_parents, out_option=False):
     return test_result_dupglobal
 
 
-# In[10]:
+
 
 
 def test_nodup_parentspair(test_parents, out_option=False):
@@ -155,7 +155,7 @@ def test_nodup_parentspair(test_parents, out_option=False):
     return test_result_nodup
 
 
-# In[11]:
+
 
 
 def test_uniqpair_parentspair(test_parents, out_option=False, test_num=TEST_NUM):
@@ -178,7 +178,7 @@ def test_uniqpair_parentspair(test_parents, out_option=False, test_num=TEST_NUM)
     return test_result_uniqpair
 
 
-# In[12]:
+
 
 
 def test_primeorder_parentspair(test_parents, out_option=False):
@@ -189,7 +189,7 @@ def test_primeorder_parentspair(test_parents, out_option=False):
     return test_result_prime_order
 
 
-# In[13]:
+
 
 
 # testing the order1 crossover module
@@ -211,7 +211,7 @@ def test_o1x(parentspairs, test_num=TEST_NUM, out_option=False):
     return test_o1x_children
 
 
-# In[14]:
+
 
 
 # testing the partially mapped crossover module
@@ -233,7 +233,7 @@ def test_pmx(parentspairs, test_num=TEST_NUM, out_option=False):
     return test_pmx_children
 
 
-# In[15]:
+
 
 
 # testing the cycle crossover module
@@ -255,7 +255,7 @@ def test_cx(parentspairs, test_num=TEST_NUM, out_option=False):
     return test_cx_children
 
 
-# In[16]:
+
 
 
 # testing the edge recombination module
@@ -279,32 +279,29 @@ def test_ejx(parentspairs, test_num=TEST_NUM, out_option=False):
     return test_ejx_children
 
 
-# In[ ]:
+
+
+
+def foo():
+    pass
 
 
 
 
 
-# In[ ]:
+def foo():
+    pass
 
 
 
 
 
-# In[ ]:
+def foo():
+    pass
 
 
 
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+def foo():
+    pass
