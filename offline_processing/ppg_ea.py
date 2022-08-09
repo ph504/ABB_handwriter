@@ -9,7 +9,6 @@
 
 
 import random
-import heapq
 import numpy as np
 import cv2 as cv
 import ppg_init as ppg
@@ -106,13 +105,13 @@ def train_evolve(mutation,
                  fitness_func, 
                  geno2pheno,
                  get_parents_pair_method):
-    population_heap = []
+    population_pool = []
     population = population_init()
     generation = 0
     fitness_func.count = 0
     avg_fitness_profile = []
     best_fitness_profie = []
-    while(population_terminate(population_heap, fitnessfunc.count, generation)):
+    while(population_terminate(population_pool, fitnessfunc.count, generation)):
         generation_fitness_profile = []
         best_fitness = 0
         for individual in population:
@@ -121,9 +120,9 @@ def train_evolve(mutation,
             generation_fitness_profile.append(fitness)
             if(fitness > best_fitness):
                 best_fitness = fitness
-            heappush(population_heap, (1/fitness, individual))
+            population_pool.append((1/fitness, individual))
             
-        selected_parents = parent_sel(population_heap)
+        selected_parents = parent_sel(population_pool)
         parents_pairs = get_parents_pair_method(selected_parents)
         children = crossover(parents_pairs)
         for child in children:
@@ -132,13 +131,13 @@ def train_evolve(mutation,
             fitness = fitness_func(child_phenotype)
             if(fitness > best_fitness):
                 best_fitness = fitness
-            heappush(population_heap, (1/fitness, child))
+            population_pool.append((1/fitness, individual))hild))
         
         fitness_avg = np.average(generation_fitness_profile)
         avg_fitness_profile.append(fitness_avg)
         best_fitness_profile.append(best_fitness)
         generation_profile = list(range(generation))
-        population = population_sel(population_heapm, POPULATION_SIZE)
+        population = population_sel(population_pool, POPULATION_SIZE)
         generation +=1
         # plot the diagrams and report
 
