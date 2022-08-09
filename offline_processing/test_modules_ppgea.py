@@ -305,3 +305,19 @@ def foo():
 
 def foo():
     pass
+
+
+
+
+
+def main():
+    pass
+
+
+
+
+
+if __name__ == '__main__':
+    main()
+    test_o1x()
+

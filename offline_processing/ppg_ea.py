@@ -127,11 +127,11 @@ def train_evolve(mutation,
         children = crossover(parents_pairs)
         for child in children:
             mutation(child)
-            child_phenotype = geno2pheno(individual)
+            child_phenotype = geno2pheno(child)
             fitness = fitness_func(child_phenotype)
             if(fitness > best_fitness):
                 best_fitness = fitness
-            population_pool.append((1/fitness, individual))hild))
+            population_pool.append((1/fitness, child))
         
         fitness_avg = np.average(generation_fitness_profile)
         avg_fitness_profile.append(fitness_avg)
