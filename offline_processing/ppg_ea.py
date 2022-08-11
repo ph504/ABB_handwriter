@@ -289,27 +289,38 @@ def get_parents_pair_prime_order(sel_parents):
     return parents_pairs
 
 # crossovers ----------------------------------
-def order1_crossover(parents_pairs):
+# rd = right for debug mode.
+# ld = left for debug mode.
+def order1_crossover(parents_pairs, rd= -1, ld= -1):
     children = []
     for pp in parents_pairs:
         if(random.random()<P_CROSSOVER):
             parent1 = pp[0]
             parent2 = pp[1]
-            child1 = parent1.copy()
-            child2 = parent2.copy()
             chrom_size = len(parent1)
+            child1 = [-1]*chrom_size
+            child2 = [-1]*chrom_size
+            
             # taking a random sublist as the cut in the crossover
             left = random.randint(0, chrom_size-1)
             right = random.randint(0, chrom_size-1)
-            while(left==right):
-                right = random.randint(0, chrom_size-1)
+            
+            if DEBUGMODE and (rd!=-1 and ld!=-1):
+                left = ld
+                right = rd
+
+            else:
+                while(left==right):
+                    right = random.randint(0, chrom_size-1)
+
             if(left>right):
                 left,right = right,left
+
             child1[left:right+1] = parent1[left:right+1]
             child2[left:right+1] = parent2[left:right+1]
             ptr1 = right+1
             ptr2 = right+1
-            for i in range(right+1, len(parent1)):
+            for i in range(right+1, chrom_size):
                 if(parent2[i] not in child1[left:right+1]):
                     ptr1%=chrom_size
                     child1[ptr1] = parent2[i]
@@ -343,11 +354,13 @@ def order1_crossover(parents_pairs):
                 print('parent1=', parent1)
                 print('parent2=', parent2)
                 print('-----')
-                print('child1=', child1)
-                print('child2=', child2)
+                print('child1 =', child1)
+                print('child2 =', child2)
     return children
 
-def partially_mapped_crossover(parents_pairs):
+# rd = right for debug mode.
+# ld = left for debug mode.
+def partially_mapped_crossover(parents_pairs, rd= -1, ld= -1):
     children = []
     for pp in parents_pairs:
         if(random.random()<P_CROSSOVER):
@@ -359,8 +372,15 @@ def partially_mapped_crossover(parents_pairs):
             # taking a random sublist as the cut in the crossover
             left = random.randint(0, chrom_size-1)
             right = random.randint(0, chrom_size-1)
-            while(left==right):
-                right = random.randint(0, chrom_size-1)
+
+            if DEBUGMODE and (rd!=-1 and ld!=-1):
+                left = ld
+                right = rd
+
+            else:
+                while(left==right):
+                    right = random.randint(0, chrom_size-1)
+            
             if(left>right):
                 left,right = right,left
 
@@ -390,8 +410,8 @@ def partially_mapped_crossover(parents_pairs):
                 print('parent1=', parent1)
                 print('parent2=', parent2)
                 print('-----')
-                print('child1=', child1)
-                print('child2=', child2)
+                print('child1 =', child1)
+                print('child2 =', child2)
     return children
 
 def cycle_crossover(parents_pairs):
@@ -433,8 +453,8 @@ def cycle_crossover(parents_pairs):
                 print('parent1=', parent1)
                 print('parent2=', parent2)
                 print('-----')
-                print('child1=', child1)
-                print('child2=', child2)
+                print('child1 =', child1)
+                print('child2 =', child2)
     return children
 
 # -------------------------- edge recombination
@@ -566,8 +586,8 @@ def edge_recombination(parents_pairs):
                 print('parent1=', parent1)
                 print('parent2=', parent2)
                 print('-----')
-                print('child1=', child1)
-                print('child2=', child2)
+                print('child1 =', child1)
+                print('child2 =', child2)
     return children
 # crossovers ----------------------------------
 

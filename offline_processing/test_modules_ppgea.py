@@ -111,7 +111,7 @@ def test_swap_mutation():
 def test_generate_parents(test_parents_num=79, out_option=False):
     # making random parents
     test_parents = []
-    for i in range(test_parnets_num):
+    for i in range(test_parents_num):
         test_ind = list(range(10))
         random.shuffle(test_ind)
         test_parents.append(test_ind)
@@ -201,13 +201,15 @@ def test_primeorder_parentspair(test_parents, out_option=False):
 # *random pairs, no duplication of pairs
 # *random pairs, no restriction on duplicates
 # *unchanged order fo the pool paired.
-def test_o1x(parentspairs, test_num=TEST_NUM, out_option=False):
+def test_o1x(parentspairs, test_num=TEST_NUM, out_option=False, rd=-1, ld=-1):
+    ppg_ea.DEBUGMODE=True
     for i in range(test_num):
-        test_o1x_children = ppg_ea.order1_crossover(parentspairs)
+        test_o1x_children = ppg_ea.order1_crossover(parentspairs, rd=rd, ld=ld)
         if(out_option):
             print('resulted children from order 1 crossover:')
             for child in test_o1x_children:
                 print(child)
+    ppg_ea.DEBUGMODE=True
     return test_o1x_children
 
 
@@ -223,13 +225,15 @@ def test_o1x(parentspairs, test_num=TEST_NUM, out_option=False):
 # *random pairs, no duplication of pairs
 # *random pairs, no restriction on duplicates
 # *unchanged order fo the pool paired.
-def test_pmx(parentspairs, test_num=TEST_NUM, out_option=False):
+def test_pmx(parentspairs, test_num=TEST_NUM, out_option=False, rd=-1, ld=-1):
+    ppg_ea.DEBUGMODE = True
     for i in range(test_num):
-        test_pmx_children = ppg_ea.partially_mapped_crossover(parentspairs)
+        test_pmx_children = ppg_ea.partially_mapped_crossover(parentspairs, rd=rd, ld=ld)
         if(out_option):
             print('resulted children from partially mapped crossover:')
             for child in test_pmx_children:
                 print(child)
+    ppg_ea.DEBUGMODE = False
     return test_pmx_children
 
 
@@ -246,12 +250,14 @@ def test_pmx(parentspairs, test_num=TEST_NUM, out_option=False):
 # *random pairs, no restriction on duplicates
 # *unchanged order fo the pool paired.
 def test_cx(parentspairs, test_num=TEST_NUM, out_option=False):
+    ppg_ea.DEBUGMODE = True
     for i in range(test_num):
         test_cx_children = ppg_ea.cycle_crossover(parentspairs)
         if(out_option):
             print('resulted children from cycle crossover')
             for child in test_cx_children:
                 print(child)
+    ppg_ea.DEBUGMODE = False
     return test_cx_children
 
 
@@ -319,5 +325,10 @@ def main():
 
 if __name__ == '__main__':
     main()
-    test_o1x()
+    test_parents_pool = test_generate_parents(test_parents_num=6)
+    test_parentspairs = test_nodup_parentspair(test_parents_pool)
+    children = test_cx(test_parentspairs, test_num=1, out_option=True)
+
+    
+
 
