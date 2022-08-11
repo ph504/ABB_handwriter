@@ -420,8 +420,8 @@ def cycle_crossover(parents_pairs):
         if(random.random()<P_CROSSOVER):
             parent1 = np.array(pp[0])
             parent2 = np.array(pp[1])
-            child1 = np.ones(parent1.shape)*-1
-            child2 = np.ones(parent1.shape)*-1
+            child1 = np.ones(parent1.shape, dtype='int32')*-1
+            child2 = np.ones(parent1.shape, dtype='int32')*-1
             cycles = []
             visited = []
             for i in range(parent1.shape[0]):

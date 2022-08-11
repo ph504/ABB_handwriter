@@ -327,7 +327,7 @@ if __name__ == '__main__':
     main()
     test_parents_pool = test_generate_parents(test_parents_num=6)
     test_parentspairs = test_nodup_parentspair(test_parents_pool)
-    children = test_cx(test_parentspairs, test_num=1, out_option=True)
+    children = test_pmx(test_parentspairs, test_num=1, out_option=True)
 
     
 
