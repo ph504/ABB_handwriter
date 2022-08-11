@@ -94,7 +94,10 @@ def seqeval_MSE(sequence, img_size, desired_image):
     plt.axis("off")
     
     error = estimated_image - normalized_desired
-    MSE = np.sum(error**2)
+    SE = np.sum(error**2)
+    if(SE==0):
+        SE = 1
+    MSE = SE/(img_size**2)
     return MSE
 
 

@@ -652,8 +652,11 @@ def random_population_select(population, select_size=POPULATION_SIZE, duplicate_
     else:
         for ctr in range(select_size):
             r = random.choice(population)
+            while r in selected:
+                r = random.choice(population)
             selected.append(r)
     # remove tuple from the list:
+
     # selected = list(map(lambda x: x[0], selected))
     selected_raw = [x[1] for x in selected]
     return selected_raw
