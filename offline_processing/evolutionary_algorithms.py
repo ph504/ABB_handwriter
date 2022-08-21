@@ -17,77 +17,13 @@ import seqeval
 DEBUGMODE = False
 
 
-# ## Fetch preprocessed data
-
-
-number_gray = np.zeros((ppg.NO_DIGITS, ppg.IMG_WIDTH ,ppg.IMG_HEIGHT))
-for i in range (ppg.NO_DIGITS):
-    number_image = cv.imread(ppg.IMAGE_PATH+' '+str(i)+' dilated.png')
-    number_gray[i] = cv.cvtColor(number_image, cv.COLOR_BGR2GRAY)
-
-
-# ## Sample black pixels
-# 
-# there are two ways to sample the pixels. sampling based on their distribution, sampling them based on their sufficient black pixel in a subarea of the image and uniformly distribute them. here we try both and compare the results.
-
-# ### Change resolution
-
-
-stride = 30
-lrbp_threshold = 10 # low resolution black pixels threshold. 
-# this is used when we want to count the number of the black pixels in the high resolution image
-# and decide whether to mark the corresponding pixel in low resolution image black.
-new_imgw = int(ppg.IMG_WIDTH/stride)
-new_imgh = int(ppg.IMG_HEIGHT/stride)
-new_img = np.ones((ppg.NO_DIGITS, new_imgw, new_imgh))*255
-new_img2 = np.ones((ppg.NO_DIGITS, new_imgw, new_imgh))*255
-# stride is always an odd number.
-
-for i in range(ppg.NO_DIGITS):
-    my_img = number_gray[i]
-    # jump a 3,3 square and check for any black pixel within the area.
-
-    for x in range(0, len(my_img), stride):
-        for y in range(0, len(my_img[x]), stride):
-            # stride is always an odd number.
-            offset = int((stride-1)/2)
-            new_x = int(x/stride)
-            new_y = int(y/stride)
-            black_pxl_vec = my_img[x-offset:x+offset+1,y-offset:y+offset+1]<50
-            black_pxl_num = np.sum(black_pxl_vec)
-#             print(has_black_pxl, end=' ')
-            if(black_pxl_num>lrbp_threshold): # has at least one black pixel
-                new_img[i,new_x,new_y] = 0
-#         print(' ')
-#     print('====================')
-ppg.plot_digits(new_img)
-
-
-# ### Initialize the sequence of the black pixels
-
-
-sequence_num = []
-for digit in range(10):
-    sequence = []
-    for row in range(len(new_img[digit])):
-        for col in range(len(new_img[digit, row])):
-            if new_img[digit, row, col]==0:
-                sequence.append((row, col))
-    sequence_num.append(sequence)
-    if(DEBUGMODE):
-        print('black pixels list for number ', digit, ':')
-        print(sequence, '\n')
-        
-if(DEBUGMODE):
-    print(sequence_num)
-
-
 # ## Configurations, Parameters and Constants
 
 
 P_MUTATION = 0.8
 P_CROSSOVER = 1.0
 POPULATION_SIZE = 100
+MAX_NUM_OF_GEN = 1000
 
 DIGIT = 0
 
@@ -102,7 +38,9 @@ def train_evolve(mutation,
                  population_sel, 
                  population_init, 
                  population_terminate, 
-                 fitness_func, 
+                 vertices=[],
+                 desired_pheno=[],
+                 fitness_func,
                  geno2pheno,
                  get_parents_pair_method):
     population_pool = []
@@ -736,7 +674,7 @@ def exponential_ranked_based_select(population, select_size=POPULATION_SIZE, dup
 
 
 # random individual initializing
-def population_init():
+def population_init(sequence_num):
     population = []
     for i in range(POPULATION_SIZE):
         std_ind = list(range(len(sequence_num[DIGIT])))
@@ -749,16 +687,16 @@ def population_init():
 # 2. fitness evaluations
 # 3. generation number
 def population_terminate(population, evaluation_counter, generation):
-    return generation<1000
+    return generation < MAX_NUM_OF_GEN
 
-def geno2pheno(genotype):
+def geno2pheno(genotype, sequence_num):
     phenotype = []
     for order in genotype:
         phenotype.append(sequence_num[DIGIT, order])
     return phenotype
         
-def fitness_func(individual):
+def fitness_func(phenotype, desired_pheno):
     fitness_func.count +=1
-    mse = seqeval.seqeval_MSE(individual, ppg.LOW_RESOLUTION_IMG_SIZE, new_img[DIGIT])
+    mse = seqeval.seqeval_MSE(phenotype, ppg.LOW_RESOLUTION_IMG_SIZE, desired_pheno[DIGIT])
     fitness = 1/mse
     return fitness
