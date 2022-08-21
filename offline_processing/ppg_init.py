@@ -70,8 +70,9 @@ number_gray = np.zeros((NO_DIGITS, IMG_WIDTH ,IMG_HEIGHT))
 for i in range (NO_DIGITS):
     number_image = cv.imread(IMAGE_PATH+' '+str(i)+'.png')
     number_gray[i] = cv.cvtColor(number_image, cv.COLOR_BGR2GRAY)
-
-plot_digits(number_gray)
+    
+if __name__=='__main__':
+    plot_digits(number_gray)
 
 
 # ## Morphology Image Processing
@@ -85,23 +86,24 @@ img_dilation = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
 # convolved and third parameter is the number
 # of iterations, which will determine how much
 # you want to erode/dilate a given image.
-
-plt.figure(figsize=(12, 10))
+if __name__=='__main__':
+    plt.figure(figsize=(12, 10))
 for i in range(NO_DIGITS):
     img_erosion = cv.erode(number_gray[i], kernel, iterations=3)
     img_dilation[i, :, :] = cv.dilate(number_gray[i], kernel, iterations=1)
-    plt.subplot(5,6, 3*i+1)
-    plt.imshow(number_gray[i], cmap='gray')
-    plt.title("input image", color='white')
-    plt.axis("off")
-    plt.subplot(5,6, 3*i+2)
-    plt.imshow(img_dilation[i], cmap='gray')
-    plt.title("dilated image", color='white')
-    plt.axis("off")
-    plt.subplot(5,6, 3*i+3)
-    plt.imshow(img_erosion, cmap='gray')
-    plt.title("eroded image", color='white')
-    plt.axis("off")
+    if __name__=='__main__':
+        plt.subplot(5,6, 3*i+1)
+        plt.imshow(number_gray[i], cmap='gray')
+        plt.title("input image", color='white')
+        plt.axis("off")
+        plt.subplot(5,6, 3*i+2)
+        plt.imshow(img_dilation[i], cmap='gray')
+        plt.title("dilated image", color='white')
+        plt.axis("off")
+        plt.subplot(5,6, 3*i+3)
+        plt.imshow(img_erosion, cmap='gray')
+        plt.title("eroded image", color='white')
+        plt.axis("off")
 
 
 # Taking a matrix of size 5 as the kernel
@@ -116,27 +118,29 @@ img_dilation3 = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
 # convolved and third parameter is the number
 # of iterations, which will determine how much
 # you want to erode/dilate a given image.
-
-plt.figure(figsize=(12, 10))
+if __name__=='__main__':
+    plt.figure(figsize=(12, 10))
+    
 for i in range(NO_DIGITS):
     img_dilation1[i, :, :] = cv.dilate(number_gray[i], kernel1, iterations=1)
     img_dilation2[i, :, :] = cv.dilate(number_gray[i], kernel2, iterations=1)
     img_dilation3[i, :, :] = cv.dilate(number_gray[i], kernel3, iterations=2)
-    plt.subplot(5,6, 3*i+1)
-    plt.imshow(img_dilation1[i], cmap='gray')
-    if(i<=1):
-        plt.title("dilation a", color='white')
-    plt.axis("off")
-    plt.subplot(5,6, 3*i+2)
-    plt.imshow(img_dilation2[i], cmap='gray')
-    if(i<=1):
-        plt.title("dilation b", color='white')
-    plt.axis("off")
-    plt.subplot(5,6, 3*i+3)
-    plt.imshow(img_dilation3[i], cmap='gray')
-    if(i<=1):
-        plt.title("dilation c", color='white')
-    plt.axis("off")
+    if __name__=='__main__':
+        plt.subplot(5,6, 3*i+1)
+        plt.imshow(img_dilation1[i], cmap='gray')
+        if(i<=1):
+            plt.title("dilation a", color='white')
+        plt.axis("off")
+        plt.subplot(5,6, 3*i+2)
+        plt.imshow(img_dilation2[i], cmap='gray')
+        if(i<=1):
+            plt.title("dilation b", color='white')
+        plt.axis("off")
+        plt.subplot(5,6, 3*i+3)
+        plt.imshow(img_dilation3[i], cmap='gray')
+        if(i<=1):
+            plt.title("dilation c", color='white')
+        plt.axis("off")
 
 
 # ## Output
@@ -145,5 +149,5 @@ for i in range(NO_DIGITS):
 for i in range(NO_DIGITS):
     cv.imwrite(IMAGE_PATH+' '+str(i)+' dilated.png', img_dilation[i])
     
-IMAGE_PATH
+# IMAGE_PATH
 
