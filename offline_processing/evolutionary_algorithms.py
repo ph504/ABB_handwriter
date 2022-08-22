@@ -561,6 +561,8 @@ def random_population_select(population, select_size=POPULATION_SIZE, duplicate_
 # eliminate worst fitted individuals
 def best_population_select(population, select_size=POPULATION_SIZE, duplicate_allowed=True):
     selected = sorted(population, reverse=True)[:select_size]
+    # print('selected populatoin:')
+    # print(selected)
     # remove tuple from the list:
     # selected = list(map(lambda x: x[0], selected))
     selected_raw = [x[1] for x in selected]
@@ -702,7 +704,7 @@ def train_evolve(mutation,
             if(fitness > best_fitness):
                 best_fitness = fitness
                 best_ind_pheno = ind_phenotype
-            population_pool.append((1/fitness, individual))
+            population_pool.append((fitness, individual))
             
         selected_parents = parent_sel(population_pool)
         parents_pairs = get_parents_pair_method(selected_parents)
@@ -714,7 +716,7 @@ def train_evolve(mutation,
             if(fitness > best_fitness):
                 best_fitness = fitness
                 best_ind_pheno = ind_phenotype
-            population_pool.append((1/fitness, child))
+            population_pool.append((fitness, child))
 
         # print('------------ generation:', generation)
         # print(generation_fitness_profile)

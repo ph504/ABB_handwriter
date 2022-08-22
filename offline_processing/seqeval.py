@@ -60,6 +60,21 @@ def draw_line(estimated_image, point1, point2):
     
 
 
+# this function draws the image of the sequence estimated from ppg.
+# sequence is the input from ppg with the estimated order.
+# img_size is the size of the image which was estimated.
+def draw_digit(sequence, img_size):
+    estimated_image = np.ones([img_size,img_size], dtype=int)
+
+    for i in range(len(sequence)-1):
+        first_point = sequence[i] 
+        consecutive_point = sequence[i+1]
+        draw_line(estimated_image, first_point, consecutive_point)
+    
+    for i in range(len(sequence)):
+        estimated_image[sequence[i]] = 0
+
+    return estimated_image
 
 
 # the sequence is a series of paired tuples that have the order of the desired picture.
@@ -67,7 +82,6 @@ def draw_line(estimated_image, point1, point2):
 # we are using MSE because the values are normalized between 1 and 0 
 # so the pixels whose shades are close to black  become lesser value by getting squared.
 def seqeval_MSE(sequence, img_size, desired_image):
-    estimated_image = np.ones([img_size,img_size], dtype=int)
     # 2 = white
     # 0 = black
     # not 255 in order to avoid large number of variances.
@@ -76,16 +90,8 @@ def seqeval_MSE(sequence, img_size, desired_image):
     # normalize the input data
     max_intensity = np.max(desired_image)
     normalized_desired = desired_image/max_intensity
-    
-    for i in range(len(sequence)-1):
-        first_point = sequence[i] 
-        consecutive_point = sequence[i+1]
-        draw_line(estimated_image, first_point, consecutive_point)
-    
-    for i in range(len(sequence)):
-        estimated_image[sequence[i]] = 0
         
-    
+    estimated_image = draw_digit(sequence, img_size)
     if __name__ == '__main__':
         # --------- outputting and logging and testing some of the results.
         plt.figure()
