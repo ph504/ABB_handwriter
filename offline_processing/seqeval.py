@@ -86,13 +86,16 @@ def seqeval_MSE(sequence, img_size, desired_image):
         estimated_image[sequence[i]] = 0
         
     
-    # --------- outputting and logging and testing some of the results.
+    if __name__ == '__main__':
+        # --------- outputting and logging and testing some of the results.
+        plt.figure()
+        plt.imshow(norm_estimate,cmap='gray')
+        plt.axis("off")
+        
+    
     norm_estimate = estimated_image*255
     norm_estimate //= 1
-    plt.figure()
-    plt.imshow(norm_estimate,cmap='gray')
-    plt.axis("off")
-    
+        
     error = estimated_image - normalized_desired
     SE = np.sum(error**2)
     if(SE==0):

@@ -23,61 +23,9 @@ DEBUGMODE = False
 P_MUTATION = 0.8
 P_CROSSOVER = 1.0
 POPULATION_SIZE = 100
-MAX_NUM_OF_GEN = 1000
+MAX_NUM_OF_GEN = 100
 
 DIGIT = 0
-
-
-# ## Genetic algorithm general model template
-
-
-# genetic algorithm general model template
-def train_evolve(mutation,
-                 crossover,
-                 parent_sel, 
-                 population_sel, 
-                 population_init, 
-                 population_terminate, 
-                 vertices=[],
-                 desired_pheno=[],
-                 fitness_func,
-                 geno2pheno,
-                 get_parents_pair_method):
-    population_pool = []
-    population = population_init()
-    generation = 0
-    fitness_func.count = 0
-    avg_fitness_profile = []
-    best_fitness_profie = []
-    while(population_terminate(population_pool, fitnessfunc.count, generation)):
-        generation_fitness_profile = []
-        best_fitness = 0
-        for individual in population:
-            ind_phenotype = geno2pheno(individual)
-            fitness = fitness_func(ind_phenotype)
-            generation_fitness_profile.append(fitness)
-            if(fitness > best_fitness):
-                best_fitness = fitness
-            population_pool.append((1/fitness, individual))
-            
-        selected_parents = parent_sel(population_pool)
-        parents_pairs = get_parents_pair_method(selected_parents)
-        children = crossover(parents_pairs)
-        for child in children:
-            mutation(child)
-            child_phenotype = geno2pheno(child)
-            fitness = fitness_func(child_phenotype)
-            if(fitness > best_fitness):
-                best_fitness = fitness
-            population_pool.append((1/fitness, child))
-        
-        fitness_avg = np.average(generation_fitness_profile)
-        avg_fitness_profile.append(fitness_avg)
-        best_fitness_profile.append(best_fitness)
-        generation_profile = list(range(generation))
-        population = population_sel(population_pool, POPULATION_SIZE)
-        generation +=1
-        # plot the diagrams and report
 
 
 # ## Functions and behaviors
@@ -90,22 +38,26 @@ def insert_mutation(child):
     if(random.random() < P_MUTATION):
         left = random.randint(0,len(child)-1)
         right = random.randint(0,len(child)-1)
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
         while(left==right or right==left+1 or left==right+1):
             right = random.randint(0,len(child)-1)
         if(left>right):
             left,right = right,left
         child.insert(left+1, child[right])
         del child[right+1]
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
     else:
-        print('mutation didn\'t occur')
+        if DEBUGMODE:
+            print('mutation didn\'t occur')
     
 def scramble_mutation(child):
     if(random.random() < P_MUTATION):
         left = random.randint(0,len(child)-1)
         right = random.randint(0,len(child)-1)
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
         while(left==right):
             right = random.randint(0,len(child)-1)
         if(left > right):
@@ -113,34 +65,43 @@ def scramble_mutation(child):
         sublist = child[left:right+1]
         random.shuffle(sublist)
         child[left:right+1] = sublist
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
     else:
-        print('mutation didn\'t occur')
+        if DEBUGMODE:
+            print('mutation didn\'t occur')
 
 def inverse_mutation(child):
     if(random.random() < P_MUTATION):
         left = random.randint(0,len(child)-1)
         right = random.randint(0,len(child)-1)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
         while(left==right):
             right = random.randint(0,len(child)-1)
         if(left > right):
             left,right = right,left
         child[left:right+1] = child[left:right+1][::-1]
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
     else:
-        print('mutation didn\'t occur')
+        if DEBUGMODE:
+            print('mutation didn\'t occur')
         
 def swap_mutation(child):
     if(random.random() < P_MUTATION):
         left = random.randint(0,len(child)-1)
         right = random.randint(0,len(child)-1)
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
         while(left==right):
             right = random.randint(0,len(child)-1)
         child[left],child[right] = child[right],child[left]
-        print('left= ', left, 'right= ', right)
+        if DEBUGMODE:
+            print('left= ', left, 'right= ', right)
     else:
-        print('mutation didn\'t occur')
+        if DEBUGMODE:
+            print('mutation didn\'t occur')
 # mutations -----------------------------------
 
 
@@ -687,12 +648,17 @@ def population_init(sequence_num):
 # 2. fitness evaluations
 # 3. generation number
 def population_terminate(population, evaluation_counter, generation):
+    print('generation =', generation, end='  ')
+    progress = (generation/MAX_NUM_OF_GEN)
+    progress_percent = progress*100
+    print(f'progress: %.1f%%'%progress_percent,end='  ')
+    print('['+'#'*int(progress*50) + '-'*int(50-50*progress)+']      ',end='\r')
     return generation < MAX_NUM_OF_GEN
 
 def geno2pheno(genotype, sequence_num):
     phenotype = []
     for order in genotype:
-        phenotype.append(sequence_num[DIGIT, order])
+        phenotype.append(sequence_num[DIGIT][order])
     return phenotype
         
 def fitness_func(phenotype, desired_pheno):
@@ -700,3 +666,61 @@ def fitness_func(phenotype, desired_pheno):
     mse = seqeval.seqeval_MSE(phenotype, ppg.LOW_RESOLUTION_IMG_SIZE, desired_pheno[DIGIT])
     fitness = 1/mse
     return fitness
+
+
+
+# ## Genetic algorithm general model template
+
+
+# genetic algorithm general model template
+def train_evolve(mutation,
+                 crossover,
+                 parent_sel,
+                 get_parents_pair_method,
+                 population_sel, 
+                 population_init=population_init, 
+                 population_terminate=population_terminate, 
+                 vertices=[],
+                 desired_pheno=[],
+                 fitness_func=fitness_func,
+                 geno2pheno=geno2pheno):
+    population_pool = []
+    population = population_init(vertices)
+    generation = 0
+    fitness_func.count = 0
+    avg_fitness_profile = []
+    best_fitness_profile = []
+    best_ind_pheno_profile = []
+    while(population_terminate(population_pool, fitness_func.count, generation)):
+        generation_fitness_profile = []
+        best_fitness = 0
+        for individual in population:
+            ind_phenotype = geno2pheno(individual, vertices)
+            fitness = fitness_func(ind_phenotype, desired_pheno)
+            generation_fitness_profile.append(fitness)
+            if(fitness > best_fitness):
+                best_fitness = fitness
+                best_ind_pheno = ind_phenotype
+            population_pool.append((1/fitness, individual))
+            
+        selected_parents = parent_sel(population_pool)
+        parents_pairs = get_parents_pair_method(selected_parents)
+        children = crossover(parents_pairs)
+        for child in children:
+            mutation(child)
+            child_phenotype = geno2pheno(child, vertices)
+            fitness = fitness_func(child_phenotype, desired_pheno)
+            if(fitness > best_fitness):
+                best_fitness = fitness
+                best_ind_pheno = ind_phenotype
+            population_pool.append((1/fitness, child))
+        
+        fitness_avg = np.average(generation_fitness_profile)
+        avg_fitness_profile.append(fitness_avg)
+        best_fitness_profile.append(best_fitness)
+        best_ind_pheno_profile.append(best_ind_pheno)
+        population = population_sel(population_pool, POPULATION_SIZE)
+        generation +=1
+
+    generation_profile = list(range(generation))
+    return generation_profile, avg_fitness_profile, best_fitness_profile, best_ind_pheno_profile
