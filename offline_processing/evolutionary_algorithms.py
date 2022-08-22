@@ -692,6 +692,7 @@ def train_evolve(mutation,
     best_fitness_profile = []
     best_ind_pheno_profile = []
     while(population_terminate(population_pool, fitness_func.count, generation)):
+        population_pool = []
         generation_fitness_profile = []
         best_fitness = 0
         for individual in population:
@@ -714,6 +715,9 @@ def train_evolve(mutation,
                 best_fitness = fitness
                 best_ind_pheno = ind_phenotype
             population_pool.append((1/fitness, child))
+
+        # print('------------ generation:', generation)
+        # print(generation_fitness_profile)
         
         fitness_avg = np.average(generation_fitness_profile)
         avg_fitness_profile.append(fitness_avg)
