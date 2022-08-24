@@ -649,13 +649,13 @@ def population_init(sequence_num):
 # 1. population or the average fitness
 # 2. fitness evaluations
 # 3. generation number
-def population_terminate(population, evaluation_counter, generation):
+def population_terminate(population, evaluation_counter, generation, best_fitness):
     print('generation =', generation, end='  ')
     progress = (generation/MAX_NUM_OF_GEN)
     progress_percent = progress*100
     print(f'progress: %.1f%%'%progress_percent,end='  ')
     print('['+'#'*int(progress*50) + '-'*int(50-50*progress)+']      ',end='\r')
-    return generation < MAX_NUM_OF_GEN
+    return generation < MAX_NUM_OF_GEN and best_fitness != 200
 
 def geno2pheno(genotype, sequence_num):
     phenotype = []
@@ -689,14 +689,15 @@ def train_evolve(mutation,
     population_pool = []
     population = population_init(vertices)
     generation = 0
+    best_fitness = 0
     fitness_func.count = 0
     avg_fitness_profile = []
     best_fitness_profile = []
     best_ind_pheno_profile = []
-    while(population_terminate(population_pool, fitness_func.count, generation)):
+    while(population_terminate(population_pool, fitness_func.count, generation, best_fitness)):
         population_pool = []
         generation_fitness_profile = []
-        best_fitness = 0
+        
         for individual in population:
             ind_phenotype = geno2pheno(individual, vertices)
             fitness = fitness_func(ind_phenotype, desired_pheno)
@@ -715,7 +716,7 @@ def train_evolve(mutation,
             fitness = fitness_func(child_phenotype, desired_pheno)
             if(fitness > best_fitness):
                 best_fitness = fitness
-                best_ind_pheno = ind_phenotype
+                best_ind_pheno = child_phenotype
             population_pool.append((fitness, child))
 
         # print('------------ generation:', generation)

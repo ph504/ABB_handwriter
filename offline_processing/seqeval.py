@@ -105,6 +105,8 @@ def seqeval_MSE(sequence, img_size, desired_image):
     error = estimated_image - normalized_desired
     SE = np.sum(error**2)
     if(SE==0):
+#         print('yes')
+#         print(sequence)
         SE = 0.5
     MSE = SE/(img_size**2)
     return MSE
