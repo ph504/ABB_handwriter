@@ -30,17 +30,17 @@ def draw_line(estimated_image, point1, point2):
     #  1 is the positive direction (x1 - x0)>0
     # -1 is the negative direction (x1 - x0)<0
     # reminder: x/abs(x) = sign(x)
-    
     if(point2[1]-point1[1]==0): # to avoid division by zero
-        for i in range(point2[0]-point1[0]):
+        for i in range(abs(point2[0]-point1[0])+1):
             v_offset = i*v_dir
             estimated_image[point1[0]+v_offset][point1[1]] = 0
     elif(point2[0]-point1[0]==0):
-        for j in range(point2[1]-point1[1]==0):
+        for j in range(abs(point2[1]-point1[1])+1):
             h_offset = j*h_dir
             estimated_image[point1[0]][point1[1]+h_offset] = 0
     else:
         m = (point2[0] - point1[0]) / (point2[1] - point1[1])
+            
         for i in range(abs(point2[0]-point1[0])+1):
             for j in range(abs(point2[1]-point1[1])+1):
                 # ignoring the end points of the line.
@@ -54,8 +54,8 @@ def draw_line(estimated_image, point1, point2):
                     for vc in range(2):
                         i_online = (point1[1]+hc+h_offset - (point1[1]+0.5))*m + (point1[0]+0.5)
                         j_online = (point1[0]+vc+v_offset - (point1[0]+0.5))/m + (point1[1]+0.5)
-                        if((point1[0]+ v_offset <= i_online and i_online <= point1[0]+ v_offset+ v_dir) 
-                           or (point1[1]+ h_offset <= j_online and j_online <= point1[1]+ h_offset+ h_dir)):
+                        if((point1[0]+ v_offset <= i_online and i_online <= point1[0]+ v_offset+ 1) 
+                           or (point1[1]+ h_offset <= j_online and j_online <= point1[1]+ h_offset+ 1)):
                             estimated_image[ point1[0]+v_offset ][ point1[1]+h_offset ] = 0
     
 
