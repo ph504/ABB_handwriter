@@ -498,11 +498,15 @@ def edge_recombination(parents_pairs):
 
 
 # 10 best inidividuals
-def from_population_best_parents_select(population, sample_size=20, select_size=10, duplicate_allowed=False):
+def from_population_best_parents_select(population, sample_size=0.2*POPULATION_SIZE, select_size=0.1*POPULATION_SIZE, duplicate_allowed=False):
+    select_size = (int)(select_size)
+    sample_size = (int)(sample_size)
     return best_population_select(population, select_size)
 
 # of 20 best inidividuals random select 10
-def from_best_random_parents_select(population, sample_size=20, select_size=10, duplicate_allowed=False):
+def from_best_random_parents_select(population, sample_size=0.2*POPULATION_SIZE, select_size=0.1*POPULATION_SIZE, duplicate_allowed=False):
+    select_size = (int)(select_size)
+    sample_size = (int)(sample_size)
     best = best_population_select(population, sample_size)
     if(not duplicates_allowed):
         return random.sample(best, select_size)
@@ -515,7 +519,9 @@ def from_best_random_parents_select(population, sample_size=20, select_size=10, 
         return rand_sel
 
 # of 20 random inidividuals select the best 10
-def from_sample_best_parents_select(population, sample_size=20, select_size=10, duplicate_allowed=True):
+def from_sample_best_parents_select(population, sample_size=0.2*POPULATION_SIZE, select_size=0.1*POPULATION_SIZE, duplicate_allowed=True):
+    select_size = (int)(select_size)
+    sample_size = (int)(sample_size)
     rand_samps = []
     if(not duplicate_allowed):
         # select 20 random samples from the population
@@ -532,11 +538,15 @@ def from_sample_best_parents_select(population, sample_size=20, select_size=10, 
     return selected_raw
 
 # random 10 individuals but individuals with better fitness have higher chances of being selected
-def fitness_porportionate_parent_select(population, sample_size=20, select_size=10, duplicate_allowed=True):
+def fitness_porportionate_parent_select(population, sample_size=0.2*POPULATION_SIZE, select_size=0.1*POPULATION_SIZE, duplicate_allowed=True):
+    select_size = (int)(select_size)
+    sample_size = (int)(sample_size)
     return fitness_porportionate_select(population, select_size, duplicate_allowed)
 
 # all the population is selected.
-def all_parents_select(population, sample_size=20, select_size=POPULATION_SIZE):
+def all_parents_select(population, sample_size=0.2*POPULATION_SIZE, select_size=POPULATION_SIZE):
+    select_size = (int)(select_size)
+    sample_size = (int)(sample_size)
     return [x[1] for x in population]
 
 
@@ -654,7 +664,7 @@ def population_terminate(population, evaluation_counter, generation, best_fitnes
     progress = (generation/MAX_NUM_OF_GEN)
     progress_percent = progress*100
     print(f'progress: %.1f%%'%progress_percent,end='  ')
-    print('['+'#'*int(progress*50) + '-'*int(50-50*progress)+']      ',end='\r')
+    print('['+'#'*int(progress*40) + '-'*int(40-40*progress)+']      ',end='\r')
     return generation < MAX_NUM_OF_GEN and best_fitness != 200
 
 def geno2pheno(genotype, sequence_num):
