@@ -18,6 +18,8 @@
 #Libraries
 import sys
 import tempfile
+import math
+import numpy as np
 import pandas as pd
 try:
     import ikpy
@@ -45,6 +47,22 @@ data_fname = 'patht_Num_ea_'
 
 DRAWING_TIME = 2 * math.pi + 1.5
 DIGIT = 9
+SAMPLE_DISTANCE = 0.03
+#############################################
+
+
+# Functions
+def sample_line(p1, p2):
+    dist = math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+    n = int(dist//SAMPLE_DISTANCE)
+    if(n==0):
+        n=1
+    sampx = np.zeros(n-1)
+    sampy = np.zeros(n-1)
+    for i in range(1,n):
+        sampx[i-1] = (p2[0]-p1[0]) * (i/n) + p1[0]
+        sampy[i-1] = (p2[1]-p1[1]) * (i/n) + p1[1]
+    return sampx, sampy
 #############################################
 
 # Initialize the Webots Supervisor.
@@ -83,8 +101,29 @@ arm = supervisor.getSelf()
 # Loop 1: Draw the digit on the paper sheet.
 print('Draw the digit on the paper sheet...')
 ctr = 0
-clock_period = DRAWING_TIME/len(df[DIGIT])
+# clock_period = DRAWING_TIME/len(df[DIGIT])
+clock_period = 0.5
 clk_start = supervisor.getTime()
+
+raw_sequence_x = df[DIGIT]['x'].tolist()
+raw_sequence_y = df[DIGIT]['y'].tolist()
+
+sampled_sequence_x = []
+sampled_sequence_y = []
+
+
+for i in range(len(raw_sequence_x)-1):
+    samples_x, samples_y = sample_line((raw_sequence_x[i],raw_sequence_y[i]),
+                            (raw_sequence_x[i+1],raw_sequence_y[i+1]))
+
+    sampled_sequence_x.append(raw_sequence_x[i])
+    sampled_sequence_y.append(raw_sequence_y[i])
+
+    sampled_sequence_x = sampled_sequence_x + [x for x in samples_x]
+    sampled_sequence_y = sampled_sequence_y + [y for y in samples_y]
+
+sampled_sequence_x.append(raw_sequence_x[-1])
+sampled_sequence_y.append(raw_sequence_y[-1])
 
 while supervisor.step(timeStep) != -1:
     # t = supervisor.getTime()
@@ -93,8 +132,8 @@ while supervisor.step(timeStep) != -1:
     # x = 0.25 * math.cos(t) + 1.1# + 0.02*t
     # y = 0.25 * math.sin(t) - 0.95# + 0.02*t
 
-    x = df[DIGIT]['x'].tolist()[ctr]
-    y = df[DIGIT]['y'].tolist()[ctr]
+    x = sampled_sequence_x[ctr]
+    y = sampled_sequence_y[ctr]
     # print('x:', x, 'y:', y)
         
     z = 0.05
@@ -114,14 +153,14 @@ while supervisor.step(timeStep) != -1:
     motors[5].setPosition(ikResults[1])
 
     # Conditions to start/stop drawing and leave this loop.
-    
+    # 1.5 is for the robot to reach its hand tot he paper. and get ready for drawing.
     if supervisor.getTime() > 1.5:
         # Note: start to draw at 1.5 second to be sure the arm is well located.
         if(supervisor.getTime() - clk_start > clock_period):
             ctr +=1
             clk_start = supervisor.getTime()
 
-        if ctr > len(df[DIGIT])-1:
+        if ctr > len(sampled_sequence_x)-1: # loop terminate condition.
             break
         supervisor.getDevice('pen').write(True)
 
