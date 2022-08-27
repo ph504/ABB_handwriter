@@ -43,11 +43,11 @@ IKPY_MAX_ITERATIONS = 4
 NO_DIGITS = 10 # number of digits
 
 data_dir = '..\\..\\data\\path(t) numbers\\'
-data_fname = 'patht_Num_'
+data_fname = 'patht_Num_ea_'
 
 DRAWING_TIME = 2 * math.pi + 1.5
-DIGIT = 2
-SAMPLE_DISTANCE = 0.08
+DIGIT = 9
+SAMPLE_DISTANCE = 0.03
 #############################################
 
 

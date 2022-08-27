@@ -72,7 +72,7 @@ Irb4600-40 {
           ]
         }
       ]
-      leadSize 0.01
+      leadSize 0.05
       maxDistance 0.05
     }
   ]
