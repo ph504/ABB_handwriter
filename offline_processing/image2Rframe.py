@@ -4,8 +4,8 @@
 import pandas as pd
 import ppg_init as ppg
 
-seq_dir = '..\\data\\pathgen out\\'
-seq_fname = 'path_Num_ea_'
+seq_dir = '..\\data\\test out\\'
+seq_fname = 'path_Num_'
 for i in range(ppg.NO_DIGITS):
     ### swap columns
     # print('----------------- i =', i)
@@ -55,4 +55,4 @@ for i in range(ppg.NO_DIGITS):
     tdf['y'] += ppg.ROBOT_PAPER_CY
     # print(tdf,'\n')
     ### save to file
-    tdf.to_csv('..\\data\\path(t) numbers\\patht_Num_ea_'+str(i)+'.csv')
+    tdf.to_csv('..\\data\\test(t) numbers\\patht_Num_'+str(i)+'.csv')
