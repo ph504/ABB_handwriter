@@ -47,7 +47,7 @@ data_fname = 'patht_Num_ea_'
 
 DRAWING_TIME = 2 * math.pi + 1.5
 DIGIT = 9
-SAMPLE_DISTANCE = 0.03
+SAMPLE_DISTANCE = 0.09
 #############################################
 
 

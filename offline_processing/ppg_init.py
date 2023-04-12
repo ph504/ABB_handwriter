@@ -24,9 +24,10 @@ def rotation_matrix(theta):
 IMG_WIDTH = 300
 IMG_HEIGHT = 300
 NO_DIGITS = 10
+NO_SYMBOLS = 3
 PLOT_WIDTH = 15
 PLOT_HEIGHT = 6
-LOW_RESOLUTION_IMG_SIZE = 10
+LOW_RESOLUTION_IMG_SIZE = 12
 LOW_RESOLUTION_IMG_MARGIN = 1
 PAPER_SIZE = 0.8 # in meters
 # PAPER_CENTER = np.array([[-0.95],
@@ -52,8 +53,8 @@ ROBOT_PAPER_CY = ROBOT_PAPER_CENTER[1]
 
 def plot_digits(digit_img):
     plt.figure(figsize=(PLOT_WIDTH, PLOT_HEIGHT))
-    for i in range(NO_DIGITS):
-        rs = NO_DIGITS/2
+    for i in range(NO_SYMBOLS):
+        rs = NO_SYMBOLS/2
         col_no = int(rs)
         row_no = 2 + math.ceil(rs) - col_no # if there are remainings.
         plt.subplot(row_no, col_no, i+1)
@@ -61,13 +62,13 @@ def plot_digits(digit_img):
         plt.axis("off")
 
 
-IMAGE_PATH = '..\\data\\generated image numbers\\number'
+IMAGE_PATH = '..\\data\\other input images\\symbol'
 print('initialized data is stored in the following directory:')
-print('..\\data\\generated image numbers')
+print('..\\data\\other input images')
 
 
-number_gray = np.zeros((NO_DIGITS, IMG_WIDTH ,IMG_HEIGHT))
-for i in range (NO_DIGITS):
+number_gray = np.zeros((NO_SYMBOLS, IMG_WIDTH ,IMG_HEIGHT))
+for i in range (NO_SYMBOLS):
     number_image = cv.imread(IMAGE_PATH+' '+str(i)+'.png')
     number_gray[i] = cv.cvtColor(number_image, cv.COLOR_BGR2GRAY)
     
@@ -79,8 +80,8 @@ if __name__=='__main__':
 
 
 # Taking a matrix of size 5 as the kernel
-kernel = np.ones((5,5), np.uint8)
-img_dilation = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
+kernel = np.ones((3,3), np.uint8)
+img_dilation = np.zeros((NO_SYMBOLS, IMG_WIDTH, IMG_HEIGHT))
 # The first parameter is the original image,
 # kernel is the matrix with which image is
 # convolved and third parameter is the number
@@ -88,7 +89,7 @@ img_dilation = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
 # you want to erode/dilate a given image.
 if __name__=='__main__':
     plt.figure(figsize=(12, 10))
-for i in range(NO_DIGITS):
+for i in range(NO_SYMBOLS):
     img_erosion = cv.erode(number_gray[i], kernel, iterations=3)
     img_dilation[i, :, :] = cv.dilate(number_gray[i], kernel, iterations=1)
     if __name__=='__main__':
@@ -110,9 +111,9 @@ for i in range(NO_DIGITS):
 kernel1 = np.ones((5,5), np.uint8)
 kernel2 = np.ones((7,7), np.uint8)
 kernel3 = np.ones((3,3), np.uint8)
-img_dilation1 = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
-img_dilation2 = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
-img_dilation3 = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
+img_dilation1 = np.zeros((NO_SYMBOLS, IMG_WIDTH, IMG_HEIGHT))
+img_dilation2 = np.zeros((NO_SYMBOLS, IMG_WIDTH, IMG_HEIGHT))
+img_dilation3 = np.zeros((NO_SYMBOLS, IMG_WIDTH, IMG_HEIGHT))
 # The first parameter is the original image,
 # kernel is the matrix with which image is
 # convolved and third parameter is the number
@@ -121,7 +122,7 @@ img_dilation3 = np.zeros((NO_DIGITS, IMG_WIDTH, IMG_HEIGHT))
 if __name__=='__main__':
     plt.figure(figsize=(12, 10))
     
-for i in range(NO_DIGITS):
+for i in range(NO_SYMBOLS):
     img_dilation1[i, :, :] = cv.dilate(number_gray[i], kernel1, iterations=1)
     img_dilation2[i, :, :] = cv.dilate(number_gray[i], kernel2, iterations=1)
     img_dilation3[i, :, :] = cv.dilate(number_gray[i], kernel3, iterations=2)
@@ -146,7 +147,7 @@ for i in range(NO_DIGITS):
 # ## Output
 
 
-for i in range(NO_DIGITS):
+for i in range(NO_SYMBOLS):
     cv.imwrite(IMAGE_PATH+' '+str(i)+' dilated.png', img_dilation[i])
     
 # IMAGE_PATH
